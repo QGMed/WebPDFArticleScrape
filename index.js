@@ -7,6 +7,9 @@ var appDir = path.dirname(require.main.filename)+"/";
 var verbose = false;
 var ignoreTitles = false;
 var noConfigLink = false;
+var lastURL = "null";
+var titleSize = 0;
+var contentSize = 0;
 
 exports.getStatus = function(){
 	console.log(status);
@@ -32,6 +35,13 @@ exports.shutUp = function(){
 	noConfigLink = true;
 }
 
+exports.getTitleSize = function(){
+	return titleSize;
+}
+
+exports.getContentSize = function(){
+	return contentSize;
+}
 
 
 exports.scrapeWeb = function(input){
@@ -43,6 +53,7 @@ exports.smartWeb = function(input){
 }
 
 function scrapeWebArticle(input,smart){
+	lastURL = input;
 	return new Promise(
 			function(res,rej){
 				var execStr = 'cd '+__dirname+' && ./wkhtmltox/bin/wkhtmltopdf '+input+' in/temp.pdf';
@@ -158,6 +169,7 @@ function genFontMap(out,res,smart, web){
 		clusters.push(new Cluster(out.substring(i,endI)));
 		i=endI+1;
 	}
+	exports.clusters = clusters;
 	smartSel(clusters,res,smart,web);
 }
 
@@ -237,6 +249,9 @@ function smartSel(clusters,res,smart,web){
 	  }
 	}
 
+	titleSize = tSize;
+	contentSize = cSize;
+
 
 	if(!smart){
 		res(sizeMap);
@@ -250,6 +265,6 @@ function smartSel(clusters,res,smart,web){
 	}
 
 	if(smart && web && !noConfigLink){
-		console.log("Was the smart parse wrong? If so manually config it to suite this page.( Also kindly save your config so others wont have to ): "+);
+		console.log("Was the smart parse wrong? If so manually config it to suite this page.( Also kindly save your config so others wont have to ): http://localhost:8080?url="+lastURL);
 	}
 }
