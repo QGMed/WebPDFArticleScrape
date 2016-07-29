@@ -3,6 +3,8 @@ var child_process = require('child_process');
 
 var path = require('path');
 var fs = require('fs');
+var http = require('http');
+var needle = require('needle');
 var appDir = path.dirname(require.main.filename)+"/";
 var verbose = false;
 var ignoreTitles = false;
@@ -10,6 +12,7 @@ var noConfigLink = false;
 var lastURL = "null";
 var titleSize = 0;
 var contentSize = 0;
+var configs = [];
 
 exports.getStatus = function(){
 	console.log(status);
@@ -52,28 +55,42 @@ exports.smartWeb = function(input){
 	return scrapeWebArticle(input,true);
 }
 
+exports.getConfigs = function(){
+	return configs;
+}
+
 function scrapeWebArticle(input,smart){
 	lastURL = input;
 	return new Promise(
 			function(res,rej){
-				var execStr = 'cd '+__dirname+' && ./wkhtmltox/bin/wkhtmltopdf '+input+' in/temp.pdf';
-			 	//console.log("executing: "+execStr);
-			 	var cp = child_process.exec(execStr,
-				  function (error, stdout, stderr) {
-				   	performPDFScrape(false,res,rej,smart,true);
+				var lastSlash = input.lastIndexOf("/");
+				var urlDIR = input.substring(0,lastSlash)+"/";
+
+				needle.post('http://108.167.189.29/~saternius/WebScraper/getConfig.php', {"urlDir":urlDIR}, 
+				    function(err, resp, body){
+				      	configs = JSON.parse(body)["data"];
+			       		var execStr = 'cd '+__dirname+' && ./wkhtmltox/bin/wkhtmltopdf --zoom .5 --no-images --disable-smart-shrinking '+input+' in/temp.pdf';
+					 	//console.log("executing: "+execStr);
+					 	var cp = child_process.exec(execStr,
+						  function (error, stdout, stderr) {
+						   	performPDFScrape(false,res,rej,smart,true);
+						});
+
+						cp.stderr.on('data',function(data){
+							status = data;
+							if(verbose)
+								console.log(data);
+						})
+
+						cp.stdout.on('data',function(data){
+							status = data;
+							if(verbose)
+								console.log(data);
+						})
+
 				});
 
-				cp.stderr.on('data',function(data){
-					status = data;
-					if(verbose)
-						console.log(data);
-				})
 
-				cp.stdout.on('data',function(data){
-					status = data;
-					if(verbose)
-						console.log(data);
-				})
 			}
 		);
 }
