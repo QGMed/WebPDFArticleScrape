@@ -1,5 +1,12 @@
 # WebPDFArticleScrape
 ####WebPDFArticleScrape is a npm module that allows you to scrape main content out of pdfs and webpage articles.
+
+######Since this module is not yet officially published to npm (will be very soon) you will have to manually download it and place it in your node_modules directory. Afterwich just use require to fetch the module.
+```javascript
+	var scraper = require('name-of-directory-you-saved-it-as');	
+```
+
+
 **Input:** <br>URL or Directory<br><br>
 **Returned DataStructures:**<br>
 sizeMap:   Map\<key:fontSize, val:Array of all text chunks of said size><br>
