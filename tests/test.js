@@ -15,7 +15,7 @@ var scraper = require("..");
 
 	//Scrapping from a PDF
 		
-		//Generating sizeMap of a PDF
+		// Generating sizeMap of a PDF
 		// scraper.scrapePDF("chest.pdf").then(
 		// 	function(sizeMap){
 		// 		console.log(sizeMap);
@@ -40,11 +40,12 @@ var scraper = require("..");
 		// )
 
 		//Generating output of a web article.
-		// scraper.smartWeb("https://en.wikipedia.org/wiki/Heart").then(
-		// 	function(sizeMap){
-		// 		console.log(sizeMap);
-		// 	}
-		// )
+		scraper.makeVerbose();
+		scraper.smartWeb("http://www.politico.com/states/florida/story/2016/08/rubio-no-abortions-for-zika-infected-women-104555").then(
+			function(output){
+				console.log(output);
+			}
+		)
 
 
 /*

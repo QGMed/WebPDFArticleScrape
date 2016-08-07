@@ -44,6 +44,17 @@
 					<div id='check' class='checkmark hidden gray-check'>✓</div>
 				</div>
 
+				<div class='property-container tool-btn shrink-btn'  onclick='shrinkOutput()'>  
+					<div class='check-btn gray-box'></div>
+					<h4 class='side-text tool-btn-txt'> Shrink Text </h4>
+					<div id='check' class='checkmark gray-minus'>-</div>
+				</div>
+
+				<div class='property-container tool-btn magnify-btn'  onclick='magnifyOutput()'>  
+					<div class='check-btn gray-box'></div>
+					<h4 class='side-text tool-btn-txt'> Magnify Text </h4>
+					<div id='check' class='checkmark gray-magnify'>+</div>
+				</div>
 
 				<br>
 				<h4 class='font-sizes-text'> Edit Configuration </h4>
@@ -72,7 +83,7 @@
 				genData.contSel = ""+(<%= contSel %>);
 				genData.configs = configs.data;
 				completeHandler(genData);
-				
+
 
 		   },
 		});

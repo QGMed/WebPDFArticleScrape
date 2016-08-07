@@ -8,7 +8,7 @@ var clusterEls = [];
 var greenDivColor = "rgb(192, 251, 191)";
 var yellowDivColor = "rgb(250, 251, 191)";
 var redDivColor = "rgb(252, 219, 219)";
-
+var clusters = [];
 var sourceURL;
 var URL;
 var lastSlash;
@@ -27,8 +27,6 @@ function completeHandler(data){
 	var jClusters = data.clusters;
 	smartCont = data.contSel;
 	smartTit = data.titSel;
-
-	var clusters = [];
 	for(var i=0; i<jClusters.length; i++){
 		clusters.push(new Cluster(jClusters[i],pOut));
 	}
@@ -337,6 +335,22 @@ function loadConfig(el,config){
 function clearConfigEls(){
 	for(var i=0; i<tagEls.length; i++){
 		tagEls[i].style.opacity = .65;
+	}
+}
+
+
+var fontMag = 4;
+function shrinkOutput(){
+	fontMag*=.8;
+	for(var i=0; i<clusters.length; i++){
+		clusters[i].el.style.fontSize = (clusters[i].size*fontMag)+"px";
+	}
+}
+
+function magnifyOutput(){
+	fontMag*=1.2;
+	for(var i=0; i<clusters.length; i++){
+		clusters[i].el.style.fontSize = (clusters[i].size*fontMag)+"px";
 	}
 }
 

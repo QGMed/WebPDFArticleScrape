@@ -72,16 +72,25 @@ function scrapeWebArticle(input,smart){
 
 				needle.post('http://108.167.189.29/~saternius/WebScraper/getConfig.php', {"urlDir":urlDIR}, 
 				    function(err, resp, body){
+				    	if(err!=null){
+				    		rej(err);
+				    	}
 				      	configs = JSON.parse(body)["data"];
 				      	if(configs.length>0 && exports.useWeb){
 				      		hasDefConfig = true;
 				      		webConfig = configs[0];
 				      	}
 
+				      	console.log("input: "+input);
+
 			       		var execStr = 'cd '+__dirname+' && ./wkhtmltox/bin/wkhtmltopdf --zoom .5 --no-images --disable-smart-shrinking '+input+' in/temp.pdf';
-					 	//console.log("executing: "+execStr);
+					 	console.log("executing: "+execStr);
 					 	var cp = child_process.exec(execStr,
 						  function (error, stdout, stderr) {
+						  	if(error!=null){
+						  		rej(error);
+						  	}
+						  	console.log("pdf generated..")
 						   	performPDFScrape(false,res,rej,smart,true);
 						});
 
@@ -152,6 +161,9 @@ function performPDFScrape(err, res, rej, smart, web){
 	var execStr = 'cd '+__dirname+' && java -cp WebArtScrape.jar MainActivity in/temp.pdf out/output.txt';
 	var cp = child_process.exec(execStr,
 	  function (error, stdout, stderr) {
+	  	if(error!=null){
+	  		rej(error);
+	  	}
 	    readFileAndMap(res,rej, smart, web);
 
 	});
