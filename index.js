@@ -1,6 +1,9 @@
+//TODO: make it so that a user can display titles and content by sentenceID.
+//TODO: dont prompt link if server is closed;
+
+
 var status = "Uninitialized";
 var child_process = require('child_process');
-
 var path = require('path');
 var fs = require('fs');
 var http = require('http');
@@ -13,7 +16,12 @@ var lastURL = "null";
 var titleSize = 0;
 var contentSize = 0;
 var configs = [];
+var hasDefConfig = false;
+var webConfig;
 
+exports.runServer = true;
+exports.useWeb = true;
+exports.featMap = null;
 exports.getStatus = function(){
 	console.log(status);
 }
@@ -38,15 +46,6 @@ exports.shutUp = function(){
 	noConfigLink = true;
 }
 
-exports.getTitleSize = function(){
-	return titleSize;
-}
-
-exports.getContentSize = function(){
-	return contentSize;
-}
-
-
 exports.scrapeWeb = function(input){
 	return scrapeWebArticle(input,false);
 }
@@ -59,7 +58,12 @@ exports.getConfigs = function(){
 	return configs;
 }
 
+
+
 function scrapeWebArticle(input,smart){
+	if(exports.runServer){
+		startServer();
+	}
 	lastURL = input;
 	return new Promise(
 			function(res,rej){
@@ -69,6 +73,11 @@ function scrapeWebArticle(input,smart){
 				needle.post('http://108.167.189.29/~saternius/WebScraper/getConfig.php', {"urlDir":urlDIR}, 
 				    function(err, resp, body){
 				      	configs = JSON.parse(body)["data"];
+				      	if(configs.length>0 && exports.useWeb){
+				      		hasDefConfig = true;
+				      		webConfig = configs[0];
+				      	}
+
 			       		var execStr = 'cd '+__dirname+' && ./wkhtmltox/bin/wkhtmltopdf --zoom .5 --no-images --disable-smart-shrinking '+input+' in/temp.pdf';
 					 	//console.log("executing: "+execStr);
 					 	var cp = child_process.exec(execStr,
@@ -89,8 +98,6 @@ function scrapeWebArticle(input,smart){
 						})
 
 				});
-
-
 			}
 		);
 }
@@ -143,13 +150,8 @@ function performPDFScrape(err, res, rej, smart, web){
 	}
 
 	var execStr = 'cd '+__dirname+' && java -cp WebArtScrape.jar MainActivity in/temp.pdf out/output.txt';
-	//console.log(execStr);
-	//console.log("cur dir: "+__dirname);
 	var cp = child_process.exec(execStr,
 	  function (error, stdout, stderr) {
-	    if (error !== null) {
-	      //console.log('exec error: ' + error);
-	    }
 	    readFileAndMap(res,rej, smart, web);
 
 	});
@@ -158,14 +160,12 @@ function performPDFScrape(err, res, rej, smart, web){
 		status = data;
 		if(verbose)
 			console.log(data);
-		//console.log(data);
 	})
 
 	cp.stdout.on('data',function(data){
 		status = data;
 		if(verbose)
 			console.log(data);
-		//console.log(data);
 	})
 }
 
@@ -187,7 +187,12 @@ function genFontMap(out,res,smart, web){
 		i=endI+1;
 	}
 	exports.clusters = clusters;
-	smartSel(clusters,res,smart,web);
+
+	if(hasDefConfig){
+		useWebConf(clusters,res);
+	}else{
+		smartSel(clusters,res,smart,web);
+	}
 }
 
 
@@ -216,16 +221,11 @@ function smartSel(clusters,res,smart,web){
 
 	for(var i=0; i<clusters.length;i++){
 		var cSize = clusters[i].size;
-		// //Hard coded: Removes wiki references.
-		// if(cSize==6.12 || cSize==5.91){
-		// 	continue;
-		// }
 		if(sizeMap[cSize]==null){
 			sizeMap[cSize] = [clusters[i].content];
 		}else{
 			sizeMap[cSize].push(clusters[i].content);
 		}
-
 		if(freqMap[cSize] == null){
 			freqMap[cSize] = clusters[i].content.length;
 			if(!ignoreTitles){
@@ -265,11 +265,9 @@ function smartSel(clusters,res,smart,web){
 	  	}
 	  }
 	}
-
 	titleSize = tSize;
 	contentSize = cSize;
-
-
+	exports.featMap = sizeMap;
 	if(!smart){
 		res(sizeMap);
 	}else{
@@ -280,8 +278,92 @@ function smartSel(clusters,res,smart,web){
 		retMap["content"] = sizeMap[cSize];
 		res(retMap);
 	}
-
-	if(smart && web && !noConfigLink){
-		console.log("Was the smart parse wrong? If so manually config it to suite this page.( Also kindly save your config so others wont have to ): http://localhost:8080?url="+lastURL);
+	if(smart && web){
+		promptConfigLink();
 	}
+}
+
+function useWebConf(clusters,res){
+	var retMap = {};
+	var titles = [];
+	var content = [];
+	var config = webConfig.config;
+	var sizeMap = {};
+	for(var i=0; i<clusters.length;i++){
+		var cSize = clusters[i].size;
+		if(sizeMap[cSize]==null){
+			sizeMap[cSize] = [clusters[i].content];
+		}else{
+			sizeMap[cSize].push(clusters[i].content);
+		}
+
+		if(config[cSize]!=null){
+			var type = config[clusters[i].size];
+			if(type === "title"){
+				titles.push(clusters[i].content);
+			}else if(type === "content"){
+				content.push(clusters[i].content);
+			}
+		}
+	}
+	retMap["titles"] = titles;
+	retMap["content"] = content;
+	exports.featMap = sizeMap;
+	res(retMap);
+	promptConfigLink();
+}
+
+function promptConfigLink(){
+	if(exports.runServer && !noConfigLink){
+		console.log("Was the smart parse wrong? If so manually config it to suite this page.( Also kindly save your config so others wont have to ): http://localhost:8081");
+	}
+}
+
+
+
+function startServer(){
+	//WEBSERVER FOR CONFIGING
+	var express = require('express');
+	var stringy = require('stringy');
+	var bodyParser = require('body-parser');
+	var app = express();
+	app.set("view engine", "ejs");
+	app.use(express.static(__dirname + "/public"));
+	app.set('views', __dirname + '/views');
+
+	app.use(bodyParser.urlencoded({
+	  extended: true
+	}));
+
+	app.use(function (req, res, next) {
+	  res.header("Access-Control-Allow-Origin", "*");
+	  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+	  res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Authorization");
+	  next();
+	});
+
+	var router = express.Router();
+	app.use('/', router);
+
+	app.get('/', dispConfig);
+
+	function dispConfig(req, res){
+	  	var retJSON = {};
+		retJSON.featMap = exports.featMap;
+		retJSON.titSel = titleSize;
+		retJSON.contSel = contentSize;
+		retJSON.clusters = exports.clusters;
+		retJSON.configs = exports.getConfigs();
+		retJSON.reqURL = lastURL;
+	  	res.render('config.ejs',retJSON);
+	}
+
+	var server = app.listen(process.env.PORT || '8081', '0.0.0.0', function() {
+		//server is running.
+	});
+}
+
+
+exports.closeServer =function(){
+	server.close();
 }
