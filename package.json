@@ -1,5 +1,5 @@
 {
-  "name": "web-pdf-article-scrapper",
+  "name": "web-pdf-scraper",
   "version": "1.0.0",
   "description": "Scrapes the main article from a website.",
   "main": "index.js",
@@ -23,5 +23,21 @@
   "bugs": {
     "url": "https://github.com/saternius/WebArticleScrape/issues"
   },
-  "homepage": "https://github.com/saternius/WebArticleScrape#readme"
+  "homepage": "https://github.com/saternius/WebArticleScrape#readme",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "ejs": "^2.5.1",
+    "express": "^4.14.0",
+    "needle": "^1.0.0",
+    "exec": "^0.2.1",
+    "http": "^0.0.0",
+    "fs": "^0.0.2",
+    "stringy": "^0.1.0",
+    "path": "^0.12.7",
+    "restler": "^3.4.0"
+  },
+  "devDependencies": {}
 }
