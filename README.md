@@ -27,7 +27,7 @@ output: {<br>
 		        function(reason) {
 		            console.log('Handle rejected promise ('+reason+') here.');
 		        }
-        	);
+        );
 ```
 
 #####Generating output of a PDF<br>
@@ -40,7 +40,7 @@ output: {<br>
 		        function(reason) {
 		            console.log('Handle rejected promise ('+reason+') here.');
 		        }
-        	);
+        );
 ```
 
 #####Generating sizeMap of a Web Article<br>
@@ -53,7 +53,7 @@ output: {<br>
 		        function(reason) {
 		            console.log('Handle rejected promise ('+reason+') here.');
 		        }
-        	);
+        );
 ```
 #####Generating output of a Web Article<br>
 ```javascript
@@ -65,7 +65,7 @@ output: {<br>
 		        function(reason) {
 		            console.log('Handle rejected promise ('+reason+') here.');
 		        }
-        	);
+        );
 ```
 
 <br>
