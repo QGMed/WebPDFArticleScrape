@@ -70,12 +70,12 @@ function scrapeWebArticle(input,smart){
 				var lastSlash = input.lastIndexOf("/");
 				var urlDIR = input.substring(0,lastSlash)+"/";
 
-				needle.post('http://108.167.189.29/~saternius/WebScraper/getConfig.php', {"urlDir":urlDIR}, 
-				    function(err, resp, body){
-				    	if(err!=null){
-				    		rej(err);
-				    	}
-				      	configs = JSON.parse(body)["data"];
+				// needle.post('http://108.167.189.29/~saternius/WebScraper/getConfig.php', {"urlDir":urlDIR}, 
+				//     function(err, resp, body){
+				//     	if(err!=null){
+				//     		rej(err);
+				//     	}
+				      	configs = [] //JSON.parse(body)["data"];
 				      	if(configs.length>0 && exports.useWeb){
 				      		hasDefConfig = true;
 				      		webConfig = configs[0];
@@ -106,7 +106,7 @@ function scrapeWebArticle(input,smart){
 								console.log(data);
 						})
 
-				});
+				// });
 			}
 		);
 }

@@ -246,11 +246,11 @@ function sendConfig(urlDIR,username){
 		return;
 	}
 	var confStr = JSON.stringify(config);
-	$.post( "http://108.167.189.29/~saternius/WebScraper/submitConfig.php", { "urlDir": urlDIR, "name": username, "config":confStr })
-  	.done(function( data ) {
-    	alert("Configuration Uploaded. Thank you for your contribution!");
-    	location.reload(); 
-  	});
+	// $.post( "http://108.167.189.29/~saternius/WebScraper/submitConfig.php", { "urlDir": urlDIR, "name": username, "config":confStr })
+ //  	.done(function( data ) {
+ //    	alert("Configuration Uploaded. Thank you for your contribution!");
+ //    	location.reload(); 
+ //  	});
 
 	function errorHandler(){
 		alert("Error submiting your configuration.");
@@ -298,11 +298,11 @@ function bumpConfig(){
 	if(bumpEl.style.opacity == 1){
 		
 		console.log(urlDir+":"+focusConfigEl.innerHTML);
-		$.post( "http://108.167.189.29/~saternius/WebScraper/bumpConfig.php", { "urlDir": urlDir, "confName":focusConfigEl.innerHTML })
-	  	.done(function( data ) {
-	    	alert("Configuration Bumped");
-	    	location.reload(); 
-	  	});
+		// $.post( "http://108.167.189.29/~saternius/WebScraper/bumpConfig.php", { "urlDir": urlDir, "confName":focusConfigEl.innerHTML })
+	 //  	.done(function( data ) {
+	 //    	alert("Configuration Bumped");
+	 //    	location.reload(); 
+	 //  	});
 
 		function errorHandler(){
 			alert("Failed to bump.");

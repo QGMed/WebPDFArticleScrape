@@ -70,23 +70,23 @@
 		lastSlash = sourceURL.lastIndexOf("/");
 		urlDir = sourceURL.substring(0,lastSlash)+"/";
 
-		$.ajax({
-		  type: "POST",
-		  url: "http://108.167.189.29/~saternius/WebScraper/getConfig.php",
-		  data: {"urlDir": urlDir},
-		  success: function(configs){ 
-		  	    configs = JSON.parse(configs);
+		// $.ajax({
+		//   type: "POST",
+		//   url: "http://108.167.189.29/~saternius/WebScraper/getConfig.php",
+		//   data: {"urlDir": urlDir},
+		//   success: function(configs){ 
+		  	    //configs = JSON.parse(configs);
 		  		var genData = {};
 				genData.featMap = <%-  JSON.stringify(featMap) %>;
 				genData.clusters = <%- JSON.stringify(clusters) %>;
 				genData.titSel = ""+(<%= titSel %>);
 				genData.contSel = ""+(<%= contSel %>);
-				genData.configs = configs.data;
+				genData.configs = []; //configs.data;
 				completeHandler(genData);
 
 
-		   },
-		});
+		//    },
+		// });
 
 	
 	</script>
