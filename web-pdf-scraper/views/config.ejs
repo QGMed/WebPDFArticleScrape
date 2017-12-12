@@ -1,0 +1,95 @@
+<html>
+	<head>
+		 <meta charset="UTF-8"> 
+		<title>WebScrapper</title>
+		<link rel="stylesheet" type="text/css" href="css/defaults.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+	</head>
+	<body style="min-height: 650px;">
+	<div class='everything' id='everything'>
+	
+		<div class="floaty-box half-box other-configs" id="otherConfigs">
+				There are no published manual configurations for this website directory.
+		</div>
+
+		<div class="floaty-box half-box parsed-content" id="parsedContent">
+			<div align="center">Smart Parsing URL:..</div>
+			<div align='center'><img src='images/ring-alt.svg' width='50px'></div>	
+		</div>
+
+		<div class="floaty-box half-box my-config" id="myConfig">
+				<b>Flags</b>
+				<div class='property-container'>  
+					<div class='check-btn yellow-box' style="cursor:default"></div>
+					<h4 class='side-text '> Titles </h4>
+					<div id='check' class='yellow-check checkmark'>✓</div>
+				</div>
+
+				<div class='property-container' style="cursor:default">  
+					<div class='check-btn green-box'></div>
+					<h4 class='side-text'> Content </h4>
+					<div id='check' class='checkmark green-check'>✓</div>
+				</div>
+
+				<div class='property-container' style="cursor:default">  
+					<div class='check-btn red-box'></div>
+					<h4 class='side-text'> Ignore </h4>
+					<div id='check' class='checkmark red-check'>✓</div>
+				</div>
+
+				<b class='tool-text'>Tools</b>
+				<div class='property-container tool-btn' onclick='toggleHideIgnores(this)'>  
+					<div class='check-btn gray-box'></div>
+					<h4 class='side-text tool-btn-txt'> Hide Ignores </h4>
+					<div id='check' class='checkmark hidden gray-check'>✓</div>
+				</div>
+
+				<div class='property-container tool-btn shrink-btn'  onclick='shrinkOutput()'>  
+					<div class='check-btn gray-box'></div>
+					<h4 class='side-text tool-btn-txt'> Shrink Text </h4>
+					<div id='check' class='checkmark gray-minus'>-</div>
+				</div>
+
+				<div class='property-container tool-btn magnify-btn'  onclick='magnifyOutput()'>  
+					<div class='check-btn gray-box'></div>
+					<h4 class='side-text tool-btn-txt'> Magnify Text </h4>
+					<div id='check' class='checkmark gray-magnify'>+</div>
+				</div>
+
+				<br>
+				<h4 class='font-sizes-text'> Edit Configuration </h4>
+		</div>
+
+	</div>
+
+	<script src="js/config.js"></script>
+	
+	<script>
+		var reqUrl = <%- JSON.stringify(reqURL)%>;
+		sourceURL = reqUrl;
+		lastSlash = sourceURL.lastIndexOf("/");
+		urlDir = sourceURL.substring(0,lastSlash)+"/";
+
+		// $.ajax({
+		//   type: "POST",
+		//   url: "http://108.167.189.29/~saternius/WebScraper/getConfig.php",
+		//   data: {"urlDir": urlDir},
+		//   success: function(configs){ 
+		  	    //configs = JSON.parse(configs);
+		  		var genData = {};
+				genData.featMap = <%-  JSON.stringify(featMap) %>;
+				genData.clusters = <%- JSON.stringify(clusters) %>;
+				genData.titSel = ""+(<%= titSel %>);
+				genData.contSel = ""+(<%= contSel %>);
+				genData.configs = []; //configs.data;
+				completeHandler(genData);
+
+
+		//    },
+		// });
+
+	
+	</script>
+	
+	</body>
+</html>

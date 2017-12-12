@@ -1,0 +1,42 @@
+{
+  "name": "web-pdf-scraper",
+  "version": "1.0.0",
+  "description": "Scrapes the main article from a website.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/saternius/WebArticleScrape.git"
+  },
+  "keywords": [
+    "webpage",
+    "article",
+    "scrapper",
+    "text",
+    "WebToText",
+    "parser"
+  ],
+  "author": "Anil Jason <satern693@gmail.com>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/saternius/WebArticleScrape/issues"
+  },
+  "homepage": "https://github.com/saternius/WebArticleScrape#readme",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "ejs": "^2.5.1",
+    "express": "^4.14.0",
+    "needle": "^1.0.0",
+    "exec": "^0.2.1",
+    "http": "^0.0.0",
+    "stringy": "^0.1.0",
+    "path": "^0.12.7",
+    "restler": "^3.4.0"
+  },
+  "devDependencies": {}
+}
